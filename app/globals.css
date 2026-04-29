@@ -1,0 +1,65 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import "tailwindcss";
+@reference "tailwindcss";
+
+:root {
+  --navy: #0F2A4A;
+  --accent: #E45858;
+  --bg: #F7F8FA;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #F7F8FA;
+  color: #0F2A4A;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center bg-[#E45858] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md cursor-pointer;
+}
+.btn-primary:hover {
+  background-color: #d43a3a;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+.btn-primary:active {
+  transform: scale(0.97);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center border-2 border-[#0F2A4A] text-[#0F2A4A] font-semibold px-6 py-3 rounded-xl transition-all duration-200 cursor-pointer;
+}
+.btn-secondary:hover {
+  background-color: #0F2A4A;
+  color: white;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-100;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  @apply text-2xl font-bold text-[#0F2A4A];
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 1.875rem;
+  }
+}
+
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
