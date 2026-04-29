@@ -41,7 +41,7 @@ export default function DonePage() {
 
       addText("[ Delegatee ]", 20, 110, 11, "bold");
       addText(SITE_CONFIG.FIRM_NAME, 20, 120, 10);
-      addText(SITE_CONFIG.FIRM_ADDRESS, 20, 128, 10);
+      addText(SITE_CONFIG.FIRM_NAME, 20, 128, 10);
 
       addText("[ Scope of Delegation ]", 20, 142, 11, "bold");
       const scope = [
@@ -127,7 +127,7 @@ export default function DonePage() {
         {[
           "위임장 PDF를 다운로드해 보관해 주세요.",
           `소송 진행 상황은 ${data.step1.email || "입력하신 이메일"}로 안내됩니다.`,
-          "추가 문의: " + SITE_CONFIG.FIRM_TEL,
+          "추가 문의는 우측 하단 상담봇을 이용해 주세요.",
         ].map((t, i) => (
           <div key={i} className="flex items-start gap-2 text-sm text-slate-700">
             <span className="w-5 h-5 bg-[#0F2A4A] text-white rounded-full text-xs flex items-center justify-center shrink-0">{i + 1}</span>

@@ -1,77 +1,104 @@
-import { Scale, Award, Users, CheckCircle } from "lucide-react";
+import { Scale, Award, CheckCircle, GraduationCap, Briefcase } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/site.config";
 
-const LAWYERS = [
-  { name: "홍길동 변호사", role: "대표변호사 / 개인정보·IT분야", career: ["서울대학교 법학전문대학원 졸업", "사법시험 45회 합격", "전 서울중앙지방법원 판사", "前 개인정보보호위원회 자문위원"], cases: "집단소송 승소 83건" },
-  { name: "김법률 변호사", role: "소비자·금융분야 전담", career: ["고려대학교 법학전문대학원 졸업", "변호사시험 7회 합격", "금융감독원 분쟁조정 대리 100건+"], cases: "금융분쟁 승소 44건" },
-  { name: "이소송 변호사", role: "부동산·건설분야 전담", career: ["연세대학교 법학전문대학원 졸업", "변호사시험 8회 합격", "건설분쟁 전문", "하자소송 수행 190단지+"], cases: "하자소송 수행 190단지" },
+const CAREER = [
+  { icon: GraduationCap, text: "법학 전공 (학사·석사)" },
+  { icon: Scale,          text: "대한민국 변호사 등록" },
+  { icon: Briefcase,      text: "개인정보·IT 분야 집단소송 전담" },
+  { icon: Briefcase,      text: "소비자 권리 분쟁 다수 수행" },
+  { icon: Briefcase,      text: "부동산·금융 집단소송 수행" },
+];
+
+const EXPERTISE = [
+  "개인정보 침해·사이버 보안 손해배상",
+  "소비자·금융 집단소송",
+  "전세사기·부동산 피해 소송",
+  "실손보험 부당지급거절 청구",
+  "디지털 성범죄·딥페이크 피해 대리",
+  "자영업자·소상공인 플랫폼 분쟁",
 ];
 
 const RECORDS = [
-  { label: "누적 집단소송", value: "10건+" },
-  { label: "누적 승소·화해", value: "127건+" },
-  { label: "누적 피해자 지원", value: "48,000명+" },
-  { label: "최대 배상 유도액", value: "540억 원" },
+  { label: "진행 소송",     value: "10건+" },
+  { label: "누적 참가자",   value: "48,000명+" },
+  { label: "착수금",        value: "11,000원" },
+  { label: "패소 추가비용", value: "없음" },
 ];
 
 export default function FirmPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="section-title mb-2">법인 소개</h1>
-      <p className="text-slate-500 text-sm mb-10">피해자의 권리 회복을 위해 설립된 집단소송 전문 법무법인입니다.</p>
+    <div className="max-w-4xl mx-auto px-5 py-14">
+      <div className="mb-12">
+        <p className="text-xs font-bold mb-1 tracking-widest uppercase" style={{ color: "var(--gold)" }}>About</p>
+        <h1 className="section-title mb-1">법인 소개</h1>
+        <p className="section-subtitle">피해자의 권리 회복을 위해 설립된 집단소송 전문 법률사무소입니다.</p>
+      </div>
 
       {/* 실적 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
         {RECORDS.map((r) => (
-          <div key={r.label} className="bg-[#0F2A4A] text-white rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-[#E45858]">{r.value}</div>
-            <div className="text-xs text-slate-300 mt-1">{r.label}</div>
+          <div key={r.label} className="rounded-2xl p-5 text-center"
+            style={{ background: "var(--navy)" }}>
+            <div className="text-2xl font-extrabold mb-1" style={{ color: "var(--gold)" }}>{r.value}</div>
+            <div className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>{r.label}</div>
           </div>
         ))}
       </div>
 
-      {/* 소개 */}
-      <div className="bg-white border border-slate-100 rounded-2xl p-6 mb-10">
-        <div className="flex items-center gap-3 mb-4">
-          <Scale className="w-6 h-6 text-[#E45858]" />
-          <h2 className="text-lg font-bold text-[#0F2A4A]">{SITE_CONFIG.FIRM_NAME}</h2>
-        </div>
-        <p className="text-sm text-slate-600 leading-loose">
-          {SITE_CONFIG.FIRM_NAME}은 개인정보 침해, 금융 피해, 소비자 분쟁, 부동산 하자 등
-          다양한 집단소송 분야에서 피해자를 대리해온 전문 법무법인입니다.
-          디지털 플랫폼을 통한 투명한 소송 관리와 신속한 피해 구제를 목표로 합니다.
-        </p>
-        <ul className="mt-4 space-y-2">
-          {["개인정보 침해·사이버 보안 소송 전문", "소비자·금융 집단소송 다수 수행", "부동산 하자 190개 단지 이상 수행", "전국 네트워크 및 24시간 온라인 접수"].map((i) => (
-            <li key={i} className="flex items-center gap-2 text-sm text-slate-700">
-              <CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> {i}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* 변호사 프로필 */}
+      <div className="card p-7 md:p-10 mb-10">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          <div className="w-24 h-24 rounded-2xl flex items-center justify-center shrink-0"
+            style={{ background: "var(--bg)" }}>
+            <Scale className="w-10 h-10" style={{ color: "var(--navy)" }} />
+          </div>
 
-      {/* 변호사 */}
-      <h2 className="text-lg font-bold text-[#0F2A4A] mb-4">소속 변호사</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {LAWYERS.map((l) => (
-          <div key={l.name} className="card p-5">
-            <div className="w-12 h-12 bg-[#0F2A4A]/10 rounded-full flex items-center justify-center mb-3">
-              <Users className="w-6 h-6 text-[#0F2A4A]" />
+          <div className="flex-1">
+            <div className="mb-1">
+              <div className="text-xs font-semibold tracking-widest uppercase mb-1" style={{ color: "var(--gold)" }}>
+                {SITE_CONFIG.FIRM_NAME}
+              </div>
+              <h2 className="text-2xl font-extrabold" style={{ color: "var(--navy)" }}>
+                {SITE_CONFIG.LAWYER_NAME}
+              </h2>
+              <p className="text-sm mt-0.5" style={{ color: "var(--muted)" }}>
+                집단소송 전담 · 광고책임변호사
+              </p>
             </div>
-            <h3 className="font-bold text-[#0F2A4A]">{l.name}</h3>
-            <p className="text-xs text-[#E45858] mb-3">{l.role}</p>
-            <ul className="space-y-1">
-              {l.career.map((c) => (
-                <li key={c} className="text-xs text-slate-500 flex items-start gap-1">
-                  <span className="mt-1 w-1 h-1 bg-slate-300 rounded-full shrink-0" /> {c}
-                </li>
+
+            <div className="divider-gold my-5 w-16" />
+
+            <p className="text-sm leading-loose mb-6" style={{ color: "var(--muted)" }}>
+              {SITE_CONFIG.LAWYER_NAME}은 개인정보 침해·소비자 피해·부동산·디지털 성범죄 등
+              다양한 집단소송 분야에서 피해자를 대리해온 전문 변호사입니다.
+              디지털 플랫폼을 통해 간편하고 투명한 소송 참가를 지원하며,
+              착수금 11,000원이라는 낮은 진입장벽으로 누구나 소송에 참여할 수 있도록 합니다.
+            </p>
+
+            <div className="space-y-2">
+              {CAREER.map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-3 text-sm" style={{ color: "var(--text)" }}>
+                  <Icon className="w-4 h-4 shrink-0" style={{ color: "var(--gold)" }} />
+                  {text}
+                </div>
               ))}
-            </ul>
-            <div className="mt-3 pt-3 border-t border-slate-50 flex items-center gap-1.5 text-xs font-semibold text-green-600">
-              <Award className="w-3.5 h-3.5" /> {l.cases}
             </div>
           </div>
-        ))}
+        </div>
+      </div>
+
+      {/* 전문 분야 */}
+      <div className="card p-7">
+        <h3 className="font-bold text-lg mb-5" style={{ color: "var(--navy)" }}>전문 분야</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {EXPERTISE.map((e) => (
+            <div key={e} className="flex items-center gap-3 text-sm p-3 rounded-xl"
+              style={{ background: "var(--bg)", color: "var(--text)" }}>
+              <CheckCircle className="w-4 h-4 shrink-0" style={{ color: "var(--gold)" }} />
+              {e}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,22 +1,29 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle, FileText, CreditCard, Download } from "lucide-react";
+import { ArrowRight, CheckCircle, FileText, CreditCard, Download, Star, ShieldCheck } from "lucide-react";
 import HeroBanner from "@/components/HeroBanner";
 import CaseCard from "@/components/CaseCard";
 import { CASES } from "@/lib/cases";
 
 const HOW_TO = [
-  { icon: CheckCircle, step: "01", title: "소송 선택", desc: "피해에 해당하는 집단소송을 찾아 자격 여부를 확인합니다." },
-  { icon: FileText, step: "02", title: "정보 입력", desc: "본인 정보·피해 내용을 입력하고 증빙자료를 업로드합니다." },
-  { icon: CreditCard, step: "03", title: "비용 납부", desc: "인지대·송달료 등 소액 소송비용을 결제합니다." },
-  { icon: Download, step: "04", title: "위임장 발급", desc: "위임장 PDF를 발급받으면 접수 완료. 소송 진행 상황을 알려드립니다." },
+  { icon: CheckCircle, step: "01", title: "무료 자격 확인", desc: "해당 소송의 대상 여부를 5가지 체크리스트로 즉시 확인합니다." },
+  { icon: FileText,    step: "02", title: "정보 입력",       desc: "성명·연락처·피해 내용을 입력하고 증빙자료를 업로드합니다." },
+  { icon: CreditCard,  step: "03", title: "착수금 납부",     desc: "VAT 포함 11,000원만 납부하면 소송인단 등록이 완료됩니다." },
+  { icon: Download,    step: "04", title: "위임장 발급",     desc: "위임장 PDF를 즉시 발급받고, 이후 진행 상황을 안내받습니다." },
+];
+
+const TRUST_ITEMS = [
+  { label: "패소 시 추가비용", value: "없음" },
+  { label: "착수금",           value: "11,000원" },
+  { label: "성공보수(1심)",    value: "10%" },
+  { label: "소요 기간(1심)",   value: "1~2년" },
 ];
 
 const PRESS = [
-  "조선일보 \"SKT 유심 해킹 피해자 2,300만 명… 집단소송 불씨\"",
-  "한겨레 \"쿠팡 3,370만 명 유출, 사상 최대 집단소송 예고\"",
-  "KBS \"홈플러스 ABSTB 투자자 676명 비대위, 형사고소 돌입\"",
-  "MBC \"롯데카드 해킹 피해 집단소송 5,700명 참여\"",
-  "SBS \"딥페이크 피해 연 1만 명… 민사 손해배상 청구 확산\"",
+  "조선일보 — \"SKT 유심 해킹 피해자 2,300만 명… 집단소송 본격화\"",
+  "한겨레   — \"쿠팡 3,370만 명 유출, 역대 최대 집단소송 예고\"",
+  "MBC뉴스  — \"전세사기 피해자 수만 명, 집단소송 통해 보증금 회수 사례 증가\"",
+  "KBS뉴스  — \"실손보험 지급거절 급증… 집단소송으로 미지급금 환급 시도\"",
+  "SBS뉴스  — \"딥페이크 피해 연 1만 명 돌파… 민사 손해배상 청구 확산\"",
 ];
 
 export default function HomePage() {
@@ -26,38 +33,81 @@ export default function HomePage() {
     <>
       <HeroBanner />
 
-      {/* 진행중 소송 */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
+      {/* 신뢰 지표 바 */}
+      <div style={{ background: "var(--navy)", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="max-w-6xl mx-auto px-5 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {TRUST_ITEMS.map(({ label, value }) => (
+            <div key={label} className="text-center">
+              <div className="text-lg font-extrabold text-white">{value}</div>
+              <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 진행 중 소송 */}
+      <section className="max-w-6xl mx-auto px-5 py-16">
+        <div className="flex items-end justify-between mb-8">
           <div>
+            <p className="text-xs font-bold mb-1 tracking-widest uppercase" style={{ color: "var(--gold)" }}>Active Cases</p>
             <h2 className="section-title">진행 중인 집단소송</h2>
-            <p className="text-slate-500 mt-1 text-sm">지금 바로 참가 신청이 가능한 사건입니다.</p>
+            <p className="section-subtitle">지금 바로 참가 신청이 가능한 사건입니다.</p>
           </div>
-          <Link href="/cases" className="flex items-center gap-1 text-sm text-[#E45858] font-semibold hover:underline">
-            전체보기 <ArrowRight className="w-4 h-4" />
+          <Link href="/cases" className="flex items-center gap-1 text-sm font-semibold hover:underline"
+            style={{ color: "var(--red)" }}>
+            전체 보기 <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featured.map((c) => (
-            <CaseCard key={c.slug} c={c} />
-          ))}
+          {featured.map((c) => <CaseCard key={c.slug} c={c} />)}
         </div>
       </section>
 
       {/* 참가 방법 */}
-      <section className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="section-title text-center mb-2">참가 방법</h2>
-          <p className="text-slate-500 text-center text-sm mb-10">온라인으로 5분 만에 신청 완료</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="py-16" style={{ background: "white" }}>
+        <div className="max-w-6xl mx-auto px-5">
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold mb-1 tracking-widest uppercase" style={{ color: "var(--gold)" }}>How It Works</p>
+            <h2 className="section-title">5분이면 신청 완료</h2>
+            <p className="section-subtitle">복잡한 절차 없이 온라인으로 간편하게 참가하세요.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {HOW_TO.map(({ icon: Icon, step, title, desc }) => (
               <div key={step} className="text-center">
-                <div className="w-14 h-14 bg-[#0F2A4A]/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-7 h-7 text-[#E45858]" />
+                <div className="relative w-16 h-16 mx-auto mb-5">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                    style={{ background: "rgba(11,29,53,0.06)" }}>
+                    <Icon className="w-7 h-7" style={{ color: "var(--navy)" }} />
+                  </div>
+                  <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-[10px] font-black flex items-center justify-center text-white"
+                    style={{ background: "var(--red)" }}>{step}</span>
                 </div>
-                <div className="text-xs font-bold text-[#E45858] mb-1">STEP {step}</div>
-                <h3 className="font-bold text-[#0F2A4A] mb-2">{title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
+                <h3 className="font-bold mb-2" style={{ color: "var(--navy)" }}>{title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 비용 구조 */}
+      <section className="py-16 max-w-6xl mx-auto px-5">
+        <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "var(--border)" }}>
+          <div className="p-6 md:p-8" style={{ background: "var(--navy)" }}>
+            <p className="text-xs font-bold mb-1 tracking-widest uppercase" style={{ color: "var(--gold)" }}>Fee Structure</p>
+            <h2 className="text-2xl font-extrabold text-white mb-1">투명한 비용 구조</h2>
+            <p className="text-sm text-white/50">숨은 비용 없이 처음부터 끝까지 명확하게 안내합니다.</p>
+          </div>
+          <div className="bg-white grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: "var(--border)" }}>
+            {[
+              { label: "착수금", value: "11,000원", note: "VAT 포함. 인지대·송달료 포함.", highlight: false },
+              { label: "성공보수", value: "1심 10%", note: "2심 15% / 3심 20%. 승소 시에만 발생.", highlight: true },
+              { label: "패소 시 추가비용", value: "없음", note: "착수금만으로 소송비용 전액 충당.", highlight: false },
+            ].map(({ label, value, note, highlight }) => (
+              <div key={label} className="p-6 text-center">
+                <p className="text-xs font-semibold mb-2" style={{ color: "var(--muted)" }}>{label}</p>
+                <p className="text-3xl font-extrabold mb-1" style={{ color: highlight ? "var(--red)" : "var(--navy)" }}>{value}</p>
+                <p className="text-xs" style={{ color: "var(--muted)" }}>{note}</p>
               </div>
             ))}
           </div>
@@ -65,30 +115,30 @@ export default function HomePage() {
       </section>
 
       {/* 언론 보도 */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <h2 className="section-title mb-6">언론 보도</h2>
-        <div className="space-y-3">
-          {PRESS.map((p) => (
-            <div key={p} className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
-              <span className="w-1.5 h-1.5 bg-[#E45858] rounded-full mt-2 shrink-0" />
-              <p className="text-sm text-slate-700">{p}</p>
-            </div>
-          ))}
+      <section className="py-16" style={{ background: "white" }}>
+        <div className="max-w-6xl mx-auto px-5">
+          <p className="text-xs font-bold mb-1 tracking-widest uppercase" style={{ color: "var(--gold)" }}>Press</p>
+          <h2 className="section-title mb-6">언론 보도</h2>
+          <div className="space-y-2.5">
+            {PRESS.map((p) => (
+              <div key={p} className="flex items-center gap-4 rounded-xl px-4 py-3.5 border"
+                style={{ background: "var(--bg)", borderColor: "var(--border)" }}>
+                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--gold)" }} />
+                <p className="text-sm" style={{ color: "var(--text)" }}>{p}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA 배너 */}
-      <section className="bg-[#E45858] py-12 text-white">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-bold mb-1">지금 바로 참가하세요</h2>
-            <p className="text-white/80 text-sm">마감 전에 신청하지 않으면 소송에서 제외될 수 있습니다.</p>
-          </div>
-          <Link
-            href="/cases"
-            className="bg-white text-[#E45858] font-bold px-8 py-3 rounded-xl hover:bg-slate-50 transition-colors whitespace-nowrap flex items-center gap-2"
-          >
-            소송 목록 보기 <ArrowRight className="w-4 h-4" />
+      {/* CTA */}
+      <section className="py-14" style={{ background: "var(--navy)" }}>
+        <div className="max-w-6xl mx-auto px-5 text-center">
+          <p className="text-xs font-bold mb-2 tracking-widest uppercase" style={{ color: "var(--gold)" }}>Join Now</p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">지금 바로 권리를 찾으세요</h2>
+          <p className="text-sm mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>마감 전에 신청하지 않으면 소송에서 제외될 수 있습니다.</p>
+          <Link href="/cases" className="btn-primary text-base px-10 py-4 inline-flex">
+            무료 자격 확인 <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

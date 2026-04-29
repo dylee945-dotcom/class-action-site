@@ -50,7 +50,7 @@ export default function PrivacyPage() {
           },
           {
             title: "11. 개인정보 보호책임자",
-            content: `- 책임자: ${SITE_CONFIG.CPO_NAME} (${SITE_CONFIG.CPO_EMAIL} / ${SITE_CONFIG.FIRM_TEL})\n- 고충처리 부서: 고객센터 (${SITE_CONFIG.FIRM_EMAIL})`,
+            content: `- 책임자: ${SITE_CONFIG.CPO_NAME} (${SITE_CONFIG.FIRM_NAME})\n- 고충처리: 사이트 내 AI 상담봇을 통해 문의해 주세요.`,
           },
           {
             title: "12. 권익침해 구제 방법",
