@@ -29,6 +29,11 @@ export default function Footer() {
               {SITE_CONFIG.FIRM_NAME}<br />
               {SITE_CONFIG.LAWYER_NAME} 운영
             </p>
+            <p className="text-xs leading-relaxed text-white/40 mt-3">
+              {SITE_CONFIG.FIRM_ADDRESS}<br />
+              대표번호 {SITE_CONFIG.FIRM_PHONE}<br />
+              {SITE_CONFIG.FIRM_EMAIL}
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-x-6 gap-y-2">

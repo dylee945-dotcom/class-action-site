@@ -136,7 +136,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-5 text-center">
           <p className="text-xs font-bold mb-2 tracking-widest uppercase" style={{ color: "var(--gold)" }}>Join Now</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">지금 바로 권리를 찾으세요</h2>
-          <p className="text-sm mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>마감 전에 신청하지 않으면 소송에서 제외될 수 있습니다.</p>
+          <p className="text-sm mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>사건마다 신청 마감일이 정해져 있으니, 참여를 원하시면 마감 전에 신청해 주세요.</p>
           <Link href="/cases" className="btn-primary text-base px-10 py-4 inline-flex">
             무료 자격 확인 <ArrowRight className="w-4 h-4" />
           </Link>

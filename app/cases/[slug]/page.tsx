@@ -210,7 +210,7 @@ export default async function CaseDetailPage({
       {/* 하단 CTA */}
       <div className="bg-[#0F2A4A] rounded-2xl p-6 text-white text-center">
         <h3 className="text-lg font-bold mb-2">지금 바로 참가하세요</h3>
-        <p className="text-slate-300 text-sm mb-4">마감일 전에 신청하지 않으면 소송에서 제외됩니다.</p>
+        <p className="text-slate-300 text-sm mb-4">본 사건의 신청 마감일은 {formatDate(c.deadline)}입니다. 참여를 원하시면 마감 전에 신청해 주세요.</p>
         <Link href={`/cases/${c.slug}/apply`} className="btn-primary inline-flex items-center gap-2">
           참가신청 시작 <ArrowRight className="w-4 h-4" />
         </Link>

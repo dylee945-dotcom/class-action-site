@@ -33,6 +33,9 @@ export default function LegalNoticePage() {
             <li>사무소명: {SITE_CONFIG.FIRM_NAME}</li>
             <li>사업자등록번호: {SITE_CONFIG.FIRM_REG_NO}</li>
             <li>대표자: {SITE_CONFIG.REPRESENTATIVE}</li>
+            <li>주소: {SITE_CONFIG.FIRM_ADDRESS}</li>
+            <li>대표번호: {SITE_CONFIG.FIRM_PHONE}</li>
+            <li>이메일: {SITE_CONFIG.FIRM_EMAIL}</li>
           </ul>
         </section>
 
