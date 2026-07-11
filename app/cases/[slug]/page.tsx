@@ -1,14 +1,52 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { CASES } from "@/lib/cases";
 import {
   ArrowRight, Clock, Users, Banknote, CheckCircle,
-  AlertCircle, ChevronDown, ChevronUp
+  AlertCircle, ChevronDown
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { SITE_CONFIG } from "@/lib/site.config";
 
 export async function generateStaticParams() {
   return CASES.map((c) => ({ slug: c.slug }));
+}
+
+function truncate(text: string, max: number): string {
+  if (text.length <= max) return text;
+  return text.slice(0, max - 1).trimEnd() + "…";
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const c = CASES.find((x) => x.slug === slug);
+  if (!c) {
+    return {
+      title: `소송 정보 없음 | ${SITE_CONFIG.SITE_NAME}`,
+      description: "요청하신 소송 정보를 찾을 수 없습니다.",
+    };
+  }
+
+  const title = `${c.title} | ${SITE_CONFIG.SITE_NAME}`;
+  const description = truncate(c.summary, 155);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+    },
+    alternates: {
+      canonical: `/cases/${slug}`,
+    },
+  };
 }
 
 function FaqItem({ q, a }: { q: string; a: string }) {
@@ -34,8 +72,39 @@ export default async function CaseDetailPage({
   const c = CASES.find((x) => x.slug === slug);
   if (!c) notFound();
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "홈", item: `${SITE_CONFIG.SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "소송 목록", item: `${SITE_CONFIG.SITE_URL}/cases` },
+      { "@type": "ListItem", position: 3, name: c.title, item: `${SITE_CONFIG.SITE_URL}/cases/${c.slug}` },
+    ],
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: c.faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.a,
+      },
+    })),
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* 브레드크럼 */}
       <nav className="text-xs text-slate-400 mb-6">
         <Link href="/" className="hover:text-[#0F2A4A]">홈</Link>

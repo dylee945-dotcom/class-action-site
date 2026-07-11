@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { CheckCircle, Download, ArrowRight, FileText } from "lucide-react";
+import { CheckCircle, Download, ArrowRight } from "lucide-react";
 import { useApplicationStore } from "@/lib/store";
 import { CASES } from "@/lib/cases";
 import { SITE_CONFIG } from "@/lib/site.config";
@@ -14,8 +14,7 @@ export default function DonePage() {
   const downloadPdf = async () => {
     setDownloading(true);
     try {
-      const jspdfModule = await import("jspdf");
-      const jsPDF = jspdfModule.jsPDF || (jspdfModule as any).default;
+      const { jsPDF } = await import("jspdf");
       const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
       const addText = (text: string, x: number, y: number, size = 12, style: "normal" | "bold" = "normal") => {
@@ -26,7 +25,7 @@ export default function DonePage() {
 
       // 페이지 1: 소송위임장
       addText("Litigation Power of Attorney", 105, 20, 18, "bold");
-      addText("(집단소송 위임장)", 105, 28, 12);
+      addText("(Class Action Power of Attorney)", 105, 28, 12);
       doc.setDrawColor(15, 42, 74);
       doc.line(20, 32, 190, 32);
 
@@ -41,7 +40,7 @@ export default function DonePage() {
 
       addText("[ Delegatee ]", 20, 110, 11, "bold");
       addText(SITE_CONFIG.FIRM_NAME, 20, 120, 10);
-      addText(SITE_CONFIG.FIRM_NAME, 20, 128, 10);
+      addText(SITE_CONFIG.LAWYER_NAME, 20, 128, 10);
 
       addText("[ Scope of Delegation ]", 20, 142, 11, "bold");
       const scope = [
@@ -88,11 +87,11 @@ export default function DonePage() {
       doc.line(20, 26, 190, 26);
 
       const costText = [
-        "1. Filing fees (Stamp duty + Service fees): KRW 20,000",
-        "2. Attorney fee: 10% of awarded damages (contingency, only if successful)",
+        "1. Retainer fee (VAT incl., stamp duty & service fees included): KRW 11,000",
+        "2. Contingency fee: 10% (1st instance) / 15% (2nd instance) / 20% (3rd instance)",
+        "   of awarded damages, only if successful",
         "3. Cost in case of loss:",
-        "   - Each plaintiff may bear approximately KRW 1,000~4,000",
-        "   - Divided equally among all plaintiffs",
+        "   - No additional cost beyond the retainer fee",
         "",
         "I acknowledge and agree to the above cost structure.",
         "",
@@ -101,12 +100,26 @@ export default function DonePage() {
       costText.forEach((t, i) => addText(t, 20, 38 + i * 8, 9));
 
       doc.save(`위임장_${data.step1.name || "신청자"}_${Date.now()}.pdf`);
-    } catch (e) {
+    } catch {
       alert("PDF 생성 중 오류가 발생했습니다.");
     } finally {
       setDownloading(false);
     }
   };
+
+  if (!data.caseSlug) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-24 text-center">
+        <h1 className="text-xl font-bold text-[#0F2A4A] mb-2">신청 내역을 찾을 수 없습니다</h1>
+        <p className="text-slate-500 text-sm mb-8">
+          접수 정보가 존재하지 않습니다. 소송 목록에서 다시 신청해 주세요.
+        </p>
+        <Link href="/cases" className="btn-primary inline-flex items-center justify-center gap-2 px-6">
+          소송 목록 보기 <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-lg mx-auto px-4 py-16 text-center">

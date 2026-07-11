@@ -1,16 +1,16 @@
 "use client";
-import { useState, useRef, use } from "react";
+import { useState, useRef, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { CASES } from "@/lib/cases";
 import { useApplicationStore } from "@/lib/store";
 import { saveApplication } from "@/lib/db";
 import {
-  CheckCircle, ChevronRight, ChevronLeft, Phone,
+  CheckCircle, ChevronRight, ChevronLeft,
   Upload, X, CreditCard, Smartphone, Building2, Loader2
 } from "lucide-react";
 
 /* ── 단계 인디케이터 ── */
-function StepIndicator({ current, total }: { current: number; total: number }) {
+function StepIndicator({ current }: { current: number }) {
   const labels = ["자격확인", "본인정보", "피해정보·동의", "결제"];
   return (
     <div className="flex items-center gap-0 mb-8">
@@ -55,8 +55,8 @@ function Step1({ onNext }: { onNext: () => void }) {
   const questions = [
     "저는 해당 소송의 피해 대상자에 해당합니다.",
     "피해 사실을 입증할 수 있는 자료가 있습니다.",
-    "소송 참가 비용(인지대 등 소액)을 부담할 의사가 있습니다.",
-    "패소 시 소송비용(1,000~4,000원 수준) 분담에 동의합니다.",
+    "착수금 11,000원(VAT 포함) 납부에 동의합니다.",
+    "패소 시 착수금 외 추가 비용이 없음을 확인했습니다.",
     "만 14세 이상입니다.",
   ];
 
@@ -89,7 +89,7 @@ function Step1({ onNext }: { onNext: () => void }) {
 
 /* ── Step 2: 본인 정보 ── */
 function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const { data, setStep1 } = useApplicationStore();
+  const { setStep1 } = useApplicationStore();
   const [form, setForm] = useState({ name: "", birth: "", phone: "", email: "", address: "", addressDetail: "" });
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
@@ -219,7 +219,7 @@ function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
 }
 
 /* ── Step 3: 피해 정보 + 동의 + 서명 ── */
-function Step3({ onNext, onBack, caseTitle }: { onNext: () => void; onBack: () => void; caseTitle: string }) {
+function Step3({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
   const { setStep2, setStep3 } = useApplicationStore();
   const [form2, setForm2] = useState({ victimType: "", damageDate: "", damageAmount: "", damageDesc: "" });
   const [files, setFiles] = useState<string[]>([]);
@@ -239,25 +239,40 @@ function Step3({ onNext, onBack, caseTitle }: { onNext: () => void; onBack: () =
     setFiles((prev) => [...prev, ...Array.from(f).map((x) => x.name)]);
   };
 
-  /* 간이 서명패드 */
-  const startDraw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  /* 간이 서명패드 (마우스 + 터치 공용) */
+  const getCanvasPoint = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  };
+  const startDraw = (e: React.PointerEvent<HTMLCanvasElement>) => {
     drawing.current = true;
+    canvasRef.current?.setPointerCapture(e.pointerId);
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
+    const { x, y } = getCanvasPoint(e);
     ctx.beginPath();
-    ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    ctx.moveTo(x, y);
   };
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const draw = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!drawing.current) return;
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#0F2A4A";
-    ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    const { x, y } = getCanvasPoint(e);
+    ctx.lineTo(x, y);
     ctx.stroke();
   };
-  const endDraw = () => {
+  const endDraw = (e: React.PointerEvent<HTMLCanvasElement>) => {
     drawing.current = false;
+    canvasRef.current?.releasePointerCapture(e.pointerId);
     setSig(canvasRef.current?.toDataURL() || "");
   };
   const clearSig = () => {
@@ -368,10 +383,10 @@ function Step3({ onNext, onBack, caseTitle }: { onNext: () => void; onBack: () =
             width={600}
             height={120}
             className="w-full touch-none cursor-crosshair"
-            onMouseDown={startDraw}
-            onMouseMove={draw}
-            onMouseUp={endDraw}
-            onMouseLeave={endDraw}
+            onPointerDown={startDraw}
+            onPointerMove={draw}
+            onPointerUp={endDraw}
+            onPointerLeave={endDraw}
           />
         </div>
         <div className="flex items-center justify-between mt-1">
@@ -407,7 +422,11 @@ function Step4({ onNext, onBack, caseSlug }: { onNext: () => void; onBack: () =>
     const ref = "DEMO-" + Math.random().toString(36).slice(2, 10).toUpperCase();
     setStep4({ paymentMethod: method, paymentRef: ref });
 
-    const c = CASES.find((x) => x.slug === caseSlug)!;
+    const c = CASES.find((x) => x.slug === caseSlug);
+    if (!c) {
+      alert("사건 정보를 찾을 수 없습니다.");
+      return;
+    }
     await saveApplication({
       caseSlug,
       caseTitle: c.title,
@@ -443,7 +462,7 @@ function Step4({ onNext, onBack, caseSlug }: { onNext: () => void; onBack: () =>
   return (
     <div>
       <h2 className="text-lg font-bold text-[#0F2A4A] mb-1">소송비용 납부</h2>
-      <p className="text-sm text-slate-500 mb-4">인지대·송달료는 법원에 납부되는 실비입니다.</p>
+      <p className="text-sm text-slate-500 mb-4">착수금에는 인지대·송달료가 모두 포함되어 있습니다.</p>
 
       {/* 데모 안내 */}
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5 text-xs text-amber-800">
@@ -452,17 +471,17 @@ function Step4({ onNext, onBack, caseSlug }: { onNext: () => void; onBack: () =>
 
       {/* 금액 */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 mb-5">
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-slate-500">인지대</span>
-          <span className="font-semibold">15,000원</span>
+        <div className="flex justify-between text-sm mb-3 pb-3 border-b border-slate-100">
+          <span className="text-slate-500">착수금 (인지대·송달료 포함)</span>
+          <span className="font-semibold">10,000원</span>
         </div>
         <div className="flex justify-between text-sm mb-3 pb-3 border-b border-slate-100">
-          <span className="text-slate-500">송달료</span>
-          <span className="font-semibold">5,000원</span>
+          <span className="text-slate-500">VAT</span>
+          <span className="font-semibold">1,000원</span>
         </div>
         <div className="flex justify-between font-bold text-base text-[#0F2A4A]">
           <span>합계</span>
-          <span>20,000원</span>
+          <span>11,000원</span>
         </div>
       </div>
 
@@ -482,7 +501,7 @@ function Step4({ onNext, onBack, caseSlug }: { onNext: () => void; onBack: () =>
           <ChevronLeft className="w-4 h-4" /> 이전
         </button>
         <button onClick={pay} disabled={paying} className="btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-70">
-          {paying ? <><Loader2 className="w-4 h-4 animate-spin" /> 처리 중...</> : "20,000원 결제하기"}
+          {paying ? <><Loader2 className="w-4 h-4 animate-spin" /> 처리 중...</> : "11,000원 결제하기"}
         </button>
       </div>
     </div>
@@ -493,10 +512,16 @@ function Step4({ onNext, onBack, caseSlug }: { onNext: () => void; onBack: () =>
 export default function ApplyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const router = useRouter();
-  const { data, setCaseSlug, reset } = useApplicationStore();
+  const { setCaseSlug, reset } = useApplicationStore();
   const [step, setStep] = useState(1);
 
   const c = CASES.find((x) => x.slug === slug);
+
+  useEffect(() => {
+    reset();
+    setCaseSlug(slug);
+  }, [slug, reset, setCaseSlug]);
+
   if (!c) return <div className="p-10 text-center text-slate-500">사건을 찾을 수 없습니다.</div>;
 
   const next = () => { setCaseSlug(slug); setStep((s) => s + 1); };
@@ -511,12 +536,12 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
         <p className="font-semibold text-[#0F2A4A] mt-0.5">{c.title}</p>
       </div>
 
-      <StepIndicator current={step} total={4} />
+      <StepIndicator current={step} />
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         {step === 1 && <Step1 onNext={next} />}
         {step === 2 && <Step2 onNext={next} onBack={back} />}
-        {step === 3 && <Step3 onNext={next} onBack={back} caseTitle={c.title} />}
+        {step === 3 && <Step3 onNext={next} onBack={back} />}
         {step === 4 && <Step4 onNext={done} onBack={back} caseSlug={slug} />}
       </div>
     </div>

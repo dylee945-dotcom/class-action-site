@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getAllApplications, updateStatus, ApplicationRow } from "@/lib/db";
 import { SITE_CONFIG } from "@/lib/site.config";
 import { Download, Lock, RefreshCw, CheckCircle } from "lucide-react";
@@ -35,7 +35,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         />
         {err && <p className="text-xs text-[#E45858] mb-3">비밀번호가 올바르지 않습니다.</p>}
         <button onClick={submit} className="btn-primary w-full">로그인</button>
-        <p className="text-xs text-slate-300 mt-3">데모 비밀번호: admin1234</p>
+        <p className="text-xs text-slate-300 mt-3">데모 비밀번호: {SITE_CONFIG.ADMIN_PASSWORD}</p>
       </div>
     </div>
   );
@@ -49,23 +49,29 @@ const STATUS_COLOR = {
 };
 
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(
+    () => typeof window !== "undefined" && sessionStorage.getItem("admin_auth") === "1"
+  );
   const [rows, setRows] = useState<ApplicationRow[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (sessionStorage.getItem("admin_auth") === "1") setAuthed(true);
-  }, []);
-
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     const data = await getAllApplications();
     setRows(data);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    if (authed) load();
+    if (!authed) return;
+    let cancelled = false;
+    (async () => {
+      const data = await getAllApplications();
+      if (!cancelled) setRows(data);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [authed]);
 
   const changeStatus = async (id: number, status: ApplicationRow["status"]) => {
@@ -73,12 +79,16 @@ export default function AdminPage() {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
   };
 
+  const csvEscape = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+
   const exportCsv = () => {
     const headers = ["ID","사건","이름","생년월일","연락처","이메일","주소","피해유형","피해일","피해금액","결제수단","결제참조","접수일","상태"];
     const body = rows.map((r) =>
-      [r.id, r.caseTitle, r.name, r.birth, r.phone, r.email, r.address, r.victimType, r.damageDate, r.damageAmount, r.paymentMethod, r.paymentRef, r.applyDate, r.status].join(",")
+      [r.id, r.caseTitle, r.name, r.birth, r.phone, r.email, r.address, r.victimType, r.damageDate, r.damageAmount, r.paymentMethod, r.paymentRef, r.applyDate, r.status]
+        .map(csvEscape)
+        .join(",")
     );
-    const csv = [headers.join(","), ...body].join("\n");
+    const csv = [headers.map(csvEscape).join(","), ...body].join("\n");
     const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

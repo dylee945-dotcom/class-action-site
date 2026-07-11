@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/site.config";
+
+export const metadata: Metadata = {
+  title: `이용약관 | ${SITE_CONFIG.SITE_NAME}`,
+  description: `${SITE_CONFIG.FIRM_NAME}이 운영하는 ${SITE_CONFIG.SITE_NAME} 서비스 이용약관입니다.`,
+  alternates: {
+    canonical: "/terms",
+  },
+};
 
 export default function TermsPage() {
   return (

@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/site.config";
 import { AlertTriangle } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: `변호사 광고 고지 | ${SITE_CONFIG.SITE_NAME}`,
+  description: `변호사법 제23조에 따른 ${SITE_CONFIG.FIRM_NAME}의 변호사 업무 광고 고지 및 광고책임변호사 안내입니다.`,
+  alternates: {
+    canonical: "/legal-notice",
+  },
+};
 
 export default function LegalNoticePage() {
   return (
@@ -48,7 +57,7 @@ export default function LegalNoticePage() {
           <h2 className="font-bold mb-3" style={{ color: "var(--navy)" }}>3. 법률사무소 운영 안내</h2>
           <p>
             본 서비스는 {SITE_CONFIG.FIRM_NAME}이 직접 운영하는 자체 홈페이지입니다.
-            제3자 알선·광고 플랫폼이 아니며, 변협 광고규정상 '알선료·성공보수 분배' 구조에 해당하지 않습니다.
+            제3자 알선·광고 플랫폼이 아니며, 변협 광고규정상 「알선료·성공보수 분배」 구조에 해당하지 않습니다.
           </p>
         </section>
       </div>

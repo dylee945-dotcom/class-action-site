@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+import { SITE_CONFIG } from "@/lib/site.config";
+
+export const metadata: Metadata = {
+  title: `자주 묻는 질문 | ${SITE_CONFIG.SITE_NAME}`,
+  description: "집단소송 참가 자격, 비용, 절차, 배상금 등 집단소송 참가에 대해 자주 묻는 질문과 답변을 모았습니다.",
+  alternates: {
+    canonical: "/faq",
+  },
+};
+
 const FAQS = [
   {
     category: "기본 안내",
@@ -67,7 +78,7 @@ const FAQS = [
       },
       {
         q: "배상금은 어떻게 지급받나요?",
-        a: "판결 확정 또는 합의 후, 성공보수를 공제한 나머지 금액이 신청 시 입력하신 계좌로 송금됩니다. 소요 시간은 판결 확정 후 통상 1~2개월입니다.",
+        a: "판결 확정 또는 합의 후, 성공보수를 공제한 나머지 금액이 판결 확정 후 개별 안내에 따라 지정하시는 계좌로 송금됩니다. 소요 시간은 판결 확정 후 통상 1~2개월입니다.",
       },
     ],
   },
@@ -80,7 +91,7 @@ const FAQS = [
       },
       {
         q: "개인정보는 안전하게 보호되나요?",
-        a: "TLS 1.3 전송 암호화, AES-256 저장 암호화를 적용하며, 소송 목적 외 제3자 제공은 없습니다. 자세한 내용은 개인정보처리방침을 참고해 주세요.",
+        a: "전송 구간 암호화(HTTPS)를 적용하며, 소송 목적 외 제3자 제공은 없습니다. 자세한 내용은 개인정보처리방침을 참고해 주세요.",
       },
       {
         q: "광고책임변호사는 누구인가요?",
@@ -91,8 +102,27 @@ const FAQS = [
 ];
 
 export default function FaqPage() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQS.flatMap((section) =>
+      section.items.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: f.a,
+        },
+      }))
+    ),
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-5 py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="mb-10">
         <p className="text-xs font-bold mb-1 tracking-widest uppercase" style={{ color: "var(--gold)" }}>FAQ</p>
         <h1 className="section-title mb-1">자주 묻는 질문</h1>

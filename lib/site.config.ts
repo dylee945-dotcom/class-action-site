@@ -1,4 +1,5 @@
 export const SITE_CONFIG = {
+  SITE_URL: "https://neurolawyer.example.com",
   SITE_NAME: "뉴로이어 집단소송",
   FIRM_NAME: "뉴로이어 법률사무소",
   LAWYER_NAME: "이도연 변호사",

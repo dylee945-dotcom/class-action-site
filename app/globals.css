@@ -114,6 +114,13 @@ body {
   box-shadow: 0 0 0 3px rgba(11,29,53,0.08);
 }
 
+/* ── 키보드 포커스 접근성 ── */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 /* ── 구분선 그라데이션 ── */
 .divider-gold {
   height: 3px;

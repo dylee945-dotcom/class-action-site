@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle, FileText, CreditCard, Download, Star, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle, FileText, CreditCard, Download } from "lucide-react";
 import HeroBanner from "@/components/HeroBanner";
 import CaseCard from "@/components/CaseCard";
 import { CASES } from "@/lib/cases";
@@ -132,7 +132,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-14" style={{ background: "var(--navy)" }}>
+      <section className="py-14 hero-pattern" style={{ background: "var(--navy)" }}>
         <div className="max-w-6xl mx-auto px-5 text-center">
           <p className="text-xs font-bold mb-2 tracking-widest uppercase" style={{ color: "var(--gold)" }}>Join Now</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">지금 바로 권리를 찾으세요</h2>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Scale, TrendingUp } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/site.config";

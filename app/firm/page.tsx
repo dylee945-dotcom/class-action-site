@@ -1,5 +1,14 @@
-import { Scale, Award, CheckCircle, GraduationCap, Briefcase } from "lucide-react";
+import type { Metadata } from "next";
+import { Scale, CheckCircle, GraduationCap, Briefcase } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/site.config";
+
+export const metadata: Metadata = {
+  title: `법인 소개 | ${SITE_CONFIG.SITE_NAME}`,
+  description: `집단소송 전문 법률사무소 ${SITE_CONFIG.FIRM_NAME}과 ${SITE_CONFIG.LAWYER_NAME}를 소개합니다. 개인정보 침해·소비자 피해·부동산·디지털 성범죄 등 다양한 집단소송을 대리합니다.`,
+  alternates: {
+    canonical: "/firm",
+  },
+};
 
 const CAREER = [
   { icon: GraduationCap, text: "법학 전공 (학사·석사)" },

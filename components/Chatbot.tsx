@@ -23,7 +23,7 @@ function getReply(input: string): string {
     return "신청 방법은 간단합니다! ① 소송 목록에서 해당 사건을 선택 → ② 자격 확인 → ③ 본인 정보 입력 → ④ 착수금 11,000원 결제 → ⑤ 위임장 PDF 발급까지 5분이면 완료됩니다. 상단 '무료 자격 확인' 버튼을 눌러보세요.";
 
   if (/착수금|비용|얼마|돈|수수료/.test(q))
-    return `착수금은 부가세 포함 **11,000원**이며, 인지대·송달료 등 모든 소송비용이 포함되어 있습니다.\n성공보수는 1심 판결 시 배상금의 10%, 2심 15%, 3심(대법원) 20%입니다. 패소 시에는 추가 비용이 없습니다.`;
+    return `착수금은 부가세 포함 11,000원이며, 인지대·송달료 등 모든 소송비용이 포함되어 있습니다.\n성공보수는 1심 판결 시 배상금의 10%, 2심 15%, 3심(대법원) 20%입니다. 패소 시에는 추가 비용이 없습니다.`;
 
   if (/패소|지면|실패|안되면/.test(q))
     return "패소하더라도 착수금 외에 추가로 부담하실 비용은 없습니다. 착수금 11,000원으로 소송비용 전액이 충당됩니다. 부담 없이 참여하세요!";
@@ -38,7 +38,7 @@ function getReply(input: string): string {
     return "성공보수는 배상금을 지급받은 경우에만 발생합니다.\n• 1심 승소: 배상금의 10%\n• 2심 승소: 배상금의 15%\n• 3심 승소: 배상금의 20%\n합의로 조기 종결될 경우에도 동일하게 적용됩니다.";
 
   if (/개인정보|정보|보안|유출/.test(q))
-    return "입력하신 개인정보는 TLS 1.3 암호화 전송, AES-256 저장 암호화로 보호됩니다. 소송 목적 외에는 절대 제3자에게 제공되지 않으며, 소송 종결 후 5년 보관 후 파기됩니다.";
+    return "입력하신 개인정보는 전송 구간 암호화(HTTPS)가 적용되어 안전하게 전달됩니다. 소송 목적 외에는 절대 제3자에게 제공되지 않으며, 소송 종결 후 5년 보관 후 파기됩니다.";
 
   if (/취소|철회|중단/.test(q))
     return "소 제기 전까지는 자유롭게 취소 가능합니다. 소 제기 후에는 법원 절차에 따라 처리됩니다. 취소를 원하시면 챗봇 대화 내용을 캡처해 문의해 주세요.";
@@ -82,7 +82,7 @@ export default function Chatbot() {
     setTimeout(() => {
       setTyping(false);
       setMessages(prev => [...prev, { role: "bot", text: getReply(text) }]);
-    }, 900 + Math.random() * 600);
+    }, 1100);
   };
 
   return (
@@ -173,7 +173,7 @@ export default function Chatbot() {
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && !e.shiftKey && send(input)}
+              onKeyDown={e => e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && send(input)}
               placeholder="궁금한 점을 입력하세요..."
               className="flex-1 text-sm px-3 py-2 rounded-xl border outline-none"
               style={{ borderColor: "var(--border)", color: "var(--text)", fontFamily: "inherit" }}

@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/site.config";
+
+export const metadata: Metadata = {
+  title: `개인정보 처리방침 | ${SITE_CONFIG.SITE_NAME}`,
+  description: `${SITE_CONFIG.FIRM_NAME}의 개인정보 수집·이용·보관·파기에 관한 개인정보 처리방침입니다.`,
+  alternates: {
+    canonical: "/privacy",
+  },
+};
 
 export default function PrivacyPage() {
   return (
@@ -42,7 +51,7 @@ export default function PrivacyPage() {
           },
           {
             title: "9. 안전성 확보 조치",
-            content: `■ 관리적: 내부관리계획 수립·시행, 정기 직원 교육\n■ 기술적: 접근권한 관리, 접근통제시스템(IP·OTP), 암호화(TLS 1.3, AES-256), 접속기록 보관·점검\n■ 물리적: 자료 보관 캐비닛 시건, 보안구역 지정`,
+            content: `■ 관리적: 내부관리계획 수립·시행, 정기 직원 교육\n■ 기술적: 접근권한 관리, 접근통제시스템(IP·OTP), 암호화 통신(HTTPS) 적용, 접속기록 보관·점검\n■ 물리적: 자료 보관 캐비닛 시건, 보안구역 지정`,
           },
           {
             title: "10. 쿠키 등 자동수집장치",

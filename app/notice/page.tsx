@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+import { SITE_CONFIG } from "@/lib/site.config";
+
+export const metadata: Metadata = {
+  title: `공지사항 및 언론보도 | ${SITE_CONFIG.SITE_NAME}`,
+  description: "SKT 유심 해킹, 쿠팡 개인정보 유출 등 진행 중인 집단소송의 최신 진행 현황과 관련 언론보도를 안내합니다.",
+  alternates: {
+    canonical: "/notice",
+  },
+};
+
 const NOTICES = [
   { date: "2026.04.29", tag: "공지", title: "SKT 유심 해킹 집단소송 참가 신청 마감일 안내 (2026.6.30)", body: "SKT 유심 해킹 피해 집단소송의 1차 신청 마감은 2026년 6월 30일입니다. 마감 전 반드시 신청 완료하시기 바랍니다." },
   { date: "2026.04.25", tag: "언론", title: "[조선일보] \"SKT 유심 해킹 피해자 2,300만 명… 집단소송 불씨\"", body: "SKT USIM 해킹 사건 관련 집단소송 동향을 조선일보에서 상세히 보도했습니다." },
